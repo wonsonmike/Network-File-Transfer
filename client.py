@@ -2,11 +2,20 @@ import socket
 
 def showOptions():
     print("\nHere are your options.")
-    print("1) Download a file")
-    print("2) Upload a file")
-    print("3) Delete a file")
+    print("1) List the files")
+    print("2) Download a file")
+    print("3) Upload a file")
+    print("4) Delete a file")
     print("c) Close")
     return "->"
+
+def list_files(client_socket):
+    command = "list"
+    client_socket.sendall(command.encode("utf-8")) # Tell the server to list files
+
+    response = client_socket.recv(4096).decode("utf-8").strip()
+    print("List of files in the directory:")
+    print(response)
 
 def download_file(client_socket):
     command = "get"
@@ -33,10 +42,12 @@ def connect_to_server(server_host, server_port):
         while (next != "c"):
             next = input(showOptions())
             if next == "1":
-                download_file(client_socket)
+                list_files(client_socket)
             elif next == "2":
-                print("Upload")
+                download_file(client_socket)
             elif next == "3":
+                print("Upload")
+            elif next == "4":
                 print("Delete")
             elif next == "c":
                 pass

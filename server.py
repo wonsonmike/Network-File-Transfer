@@ -10,11 +10,19 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
 
             if command == 'get': # Client wants to download a file
                 self.send_file()
+
+            elif command == "list": # Clent wants to list the files
+                self.list_files()
                 
             else:
                 self.request.sendall(b"Invalid command.\n")
         
         self.request.close()
+
+    def list_files(self):
+        files = os.listdir('.')
+        file_list = '\n'.join(files)
+        self.request.sendall(file_list.encode("utf-8"))
 
     def send_file(self):
         self.request.sendall(b"Enter the filename to download a file: ")
