@@ -16,7 +16,7 @@ def download_file(filename, server_host, server_port):
                 file.write(response.encode())
 
 if __name__ == "__main__":
-    server_host, server_port = "127.0.0.1", 2222
+    server_host, server_port = "192.168.8.135", 2222
     filename = "sample.txt"  # Replace with the desired filename
     download_file(filename, server_host, server_port)
     print(f"File '{filename}' downloaded successfully.")
