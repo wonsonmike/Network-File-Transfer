@@ -29,7 +29,7 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
             self.request.sendall(b"File not found.\n")
 
 if __name__ == "__main__":
-    host, port = "0.0.0.0", 2222
+    host, port = "127.0.0.1", 2222
     server = socketserver.TCPServer((host, port), SFTPServerHandler)
     print(f"SFTP server is running on {host}:{port}")
     server.serve_forever()
