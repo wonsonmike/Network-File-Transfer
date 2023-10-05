@@ -42,13 +42,13 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
         # Get the filename from the client
         filename = self.request.recv(1024).decode("utf-8").strip()
 
-        response = self.request.recv(1024).decode("utf-8").strip()
+        response = self.request.recv(1024)
         if response == "Error":
-            self.request.sendall(b"Error.\n".encode("utf-8"))
+            self.request.sendall(b"Error.\n")
         else:
             with open("files/"+filename, 'wb') as file:
                 file.write(response.encode())
-            self.request.sendall(b"File uploaded successfully.\n".encode("utf-8"))
+            self.request.sendall(b"File uploaded successfully.\n")
 
 if __name__ == "__main__":
     host, port = "192.168.8.135", 2222

@@ -52,7 +52,7 @@ def upload_file(client_socket):
             data = file.read()
             client_socket.sendall(data)
     except Exception as e:
-        client_socket.sendall("Error".encode("utf-8"))
+        client_socket.sendall(b"Error")
 
     # Print the response
     response = client_socket.recv(1024).decode("utf-8")
