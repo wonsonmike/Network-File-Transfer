@@ -40,9 +40,10 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
 
     def get_file(self):
         try:
-            self.request.sendall(b"Enter the filename for the uploaded file: ")
+            # Get the filename from the client
             filename = self.request.recv(1024).decode("utf-8").strip()
             
+            # Save the file
             with open("files/"+filename, 'wb') as file:
                 while True:
                     data = self.request.recv(1024)

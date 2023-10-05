@@ -42,21 +42,21 @@ def upload_file(client_socket):
     file_list = '\n'.join(files)
     print(file_list)
 
-    # Choose a file to upload
+    # Choose a file to upload and send the filename
     filename = input("Enter the filename for upload: ")
     client_socket.sendall(filename.encode("utf-8"))
-        
+
+    # Upload the file
+    with open("uploading/"+filename, 'rb') as file:
+        while True:
+            data = file.read(1024)
+            if not data:
+                break
+            client_socket.sendall(data)
+
+    # Print the response
     response = client_socket.recv(1024).decode("utf-8")
-    if "File uploaded successfully" in response:
-        with open("uploading/"+filename, 'rb') as file:
-            while True:
-                data = file.read(1024)
-                if not data:
-                    break
-                client_socket.sendall(data)
-        print("File uploaded successfully.")
-    else:
-        print(response)
+    print(response)
 
 def connect_to_server(server_host, server_port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
