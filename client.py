@@ -9,16 +9,14 @@ def showOptions():
     return "->"
 
 def download_file(client_socket):
-    print(client_socket.recv(1024).decode("utf-8")) # Give options
+    command = "get"
+    client_socket.sendall(command.encode("utf-8")) # Tell the server I want to download a file
 
-    filename = input(">")  # Get with the desired filename from the user
-    command = f"get {filename}"
-    client_socket.sendall(command.encode("utf-8"))
+    filename = input(client_socket.recv(1024).decode("utf-8")) # Print the filename request
+    client_socket.sendall(filename.encode("utf-8")) # Send the filename to the server
     
     response = client_socket.recv(1024).decode("utf-8").strip()
-    if response == "Invalid command. Use 'get filename'.":
-        print(response)
-    elif response == "File not found.":
+    if response == "File not found.":
         print(response)
     else:
         with open(filename, 'wb') as file:

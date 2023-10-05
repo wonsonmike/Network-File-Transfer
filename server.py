@@ -1,26 +1,25 @@
 import socketserver
+import os
 
 class SFTPServerHandler(socketserver.BaseRequestHandler):
     def handle(self):
         self.request.sendall(b"Welcome to the Simple File Sharing Server!\n")
         
         while True:
-            self.request.sendall(b"Enter 'get filename' to download a file: ")
-            data = self.request.recv(1024).decode("utf-8").strip()
-            
-            if not data:
-                break
-            
-            command, filename = data.split(maxsplit=1)
-            
-            if command == 'get':
-                self.send_file(filename)
+            command = self.request.recv(1024).decide("utf-8")
+
+            if command == 'get': # Client wants to download a file
+                self.send_file()
+                
             else:
-                self.request.sendall(b"Invalid command. Use 'get filename'.\n")
+                self.request.sendall(b"Invalid command.\n")
         
         self.request.close()
 
-    def send_file(self, filename):
+    def send_file(self):
+        self.request.sendall(b"Enter the filename to download a file: ")
+        filename = self.request.recv(1024).decode("utf-8").strip()
+
         try:
             with open(filename, 'rb') as file:
                 data = file.read()
