@@ -39,22 +39,16 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
             self.request.sendall(b"File not found.\n")
 
     def get_file(self):
-        try:
-            # Get the filename from the client
-            filename = self.request.recv(1024).decode("utf-8").strip()
-            
-            # Save the file
+        # Get the filename from the client
+        filename = self.request.recv(1024).decode("utf-8").strip()
+
+        response = self.request.recv(1024).decode("utf-8").strip()
+        if response == "Error":
+            self.request.sendall(b"Error.\n".encode("utf-8"))
+        else:
             with open("files/"+filename, 'wb') as file:
-                while True:
-                    data = self.request.recv(1024)
-                    if not data:
-                        break
-                    file.write(data)
-            
-            self.request.sendall(b"File uploaded successfully.\n")
-        
-        except Exception as e:
-            self.request.sendall(f"Error: {str(e)}\n".encode("utf-8"))
+                file.write(response.encode())
+            self.request.sendall(b"File uploaded successfully.\n".encode("utf-8"))
 
 if __name__ == "__main__":
     host, port = "192.168.8.135", 2222

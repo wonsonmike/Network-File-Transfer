@@ -47,12 +47,12 @@ def upload_file(client_socket):
     client_socket.sendall(filename.encode("utf-8"))
 
     # Upload the file
-    with open("uploading/"+filename, 'rb') as file:
-        while True:
-            data = file.read(1024)
-            if not data:
-                break
+    try:
+        with open("uploading/"+filename, 'rb') as file:
+            data = file.read()
             client_socket.sendall(data)
+    except Exception as e:
+        client_socket.sendall("Error".encode("utf-8"))
 
     # Print the response
     response = client_socket.recv(1024).decode("utf-8")
