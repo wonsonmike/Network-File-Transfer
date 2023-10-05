@@ -1,7 +1,7 @@
 import socket
 
 def showOptions():
-    print("Here are your options.")
+    print("\nHere are your options.")
     print("1) Download a file")
     print("2) Upload a file")
     print("3) Delete a file")
