@@ -29,7 +29,6 @@ def connect_to_server(server_host, server_port):
         #Connect to the client, and confirm connection to the user
         client_socket.connect((server_host, server_port))
         print(client_socket.recv(1024).decode("utf-8"))  # Welcome message
-        print(client_socket.recv(1024).decode("utf-8")) # Give options
 
 
         next = ""
