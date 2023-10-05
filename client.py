@@ -1,4 +1,5 @@
 import socket
+import os
 
 def showOptions():
     print("\nHere are your options.")
@@ -31,6 +32,32 @@ def download_file(client_socket):
         with open(filename, 'wb') as file:
             file.write(response.encode())
 
+def upload_file(client_socket):
+    command = "send"
+    client_socket.sendall(command.encode("utf-8")) # Tell the server I want to upload a file
+
+    # List the files from the uploading folder
+    print("Select from the following files to upload: ")
+    files = os.listdir('uploading')
+    file_list = '\n'.join(files)
+    print(file_list)
+
+    # Choose a file to upload
+    filename = input("Enter the filename for upload: ")
+    client_socket.sendall(filename.encode("utf-8"))
+        
+    response = client_socket.recv(1024).decode("utf-8")
+    if "File uploaded successfully" in response:
+        with open("uploading/"+filename, 'rb') as file:
+            while True:
+                data = file.read(1024)
+                if not data:
+                    break
+                client_socket.sendall(data)
+        print("File uploaded successfully.")
+    else:
+        print(response)
+
 def connect_to_server(server_host, server_port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         #Connect to the client, and confirm connection to the user
@@ -46,7 +73,7 @@ def connect_to_server(server_host, server_port):
             elif next == "2":
                 download_file(client_socket)
             elif next == "3":
-                print("Upload")
+                upload_file(client_socket)
             elif next == "4":
                 print("Delete")
             elif next == "c":

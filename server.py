@@ -8,19 +8,22 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
         while True:
             command = self.request.recv(1024).decode("utf-8")
 
-            if command == 'get': # Client wants to download a file
-                self.send_file()
-
-            elif command == "list": # Clent wants to list the files
+            if command == 'list': # Client wants to list the files
                 self.list_files()
+
+            elif command == "get": # Clent wants to download a file
+                self.send_file()
                 
+            elif command == "send": # Client wants to upload a file
+                self.get_file()
+
             else:
                 self.request.sendall(b"Invalid command.\n")
         
         self.request.close()
 
     def list_files(self):
-        files = os.listdir('.')
+        files = os.listdir('files')
         file_list = '\n'.join(files)
         self.request.sendall(file_list.encode("utf-8"))
 
@@ -29,11 +32,28 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
         filename = self.request.recv(1024).decode("utf-8").strip()
 
         try:
-            with open(filename, 'rb') as file:
+            with open("files/"+filename, 'rb') as file:
                 data = file.read()
                 self.request.sendall(data)
         except FileNotFoundError:
             self.request.sendall(b"File not found.\n")
+
+    def get_file(self):
+        try:
+            self.request.sendall(b"Enter the filename for the uploaded file: ")
+            filename = self.request.recv(1024).decode("utf-8").strip()
+            
+            with open("files/"+filename, 'wb') as file:
+                while True:
+                    data = self.request.recv(1024)
+                    if not data:
+                        break
+                    file.write(data)
+            
+            self.request.sendall(b"File uploaded successfully.\n")
+        
+        except Exception as e:
+            self.request.sendall(f"Error: {str(e)}\n".encode("utf-8"))
 
 if __name__ == "__main__":
     host, port = "192.168.8.135", 2222
