@@ -47,7 +47,7 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
             self.request.sendall(b"Error.\n")
         else:
             with open("files/"+filename, 'wb') as file:
-                file.write(response.encode())
+                file.write(response)
             self.request.sendall(b"File uploaded successfully.\n")
 
 if __name__ == "__main__":
