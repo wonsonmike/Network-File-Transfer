@@ -6,7 +6,7 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
         self.request.sendall(b"Welcome to the Simple File Sharing Server!\n")
         
         while True:
-            command = self.request.recv(1024).decide("utf-8")
+            command = self.request.recv(1024).decode("utf-8")
 
             if command == 'get': # Client wants to download a file
                 self.send_file()
