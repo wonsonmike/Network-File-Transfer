@@ -25,12 +25,23 @@ def download_file(client_socket):
     filename = input(client_socket.recv(1024).decode("utf-8")) # Print the filename request
     client_socket.sendall(filename.encode("utf-8")) # Send the filename to the server
     
-    response = client_socket.recv(1024)
+    response = b""
+    while True: # Loop until response has all data from the file
+        data = client_socket.recv(4096)
+        if not data:
+            break
+        elif b"===EOF===" in data:
+                response += data.replace(b"===EOF===", b"")
+                break
+        else:
+            response += data
+
     if response == b"File not found.":
         print(response.decode("utf-8"))
     else:
-        with open(filename, 'wb') as file:
+        with open("files/"+filename, 'wb') as file:
             file.write(response)
+        print("File successfully downloaded to the files folder.")
 
 def upload_file(client_socket):
     command = "send"
@@ -51,6 +62,7 @@ def upload_file(client_socket):
         with open("uploading/"+filename, 'rb') as file:
             data = file.read()
             client_socket.sendall(data)
+            client_socket.sendall(b"===EOF===")
     except FileNotFoundError:
         client_socket.sendall(b"Error")
 
