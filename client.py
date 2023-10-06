@@ -41,13 +41,16 @@ def download_file(client_socket):
         if not data:
             break
         elif b"===EOF===" in data:
-                response += data.replace(b"===EOF===", b"")
-                break
+            response += data.replace(b"===EOF===", b"")
+            break
+        elif b"File not found." in data:
+            response += data
+            break
         else:
             response += data
 
     # If it's an error, display it. Otherwise, save the file in the files folder
-    if response == b"File not found.":
+    if b"File not found." in response:
         print(response.decode("utf-8"))
     else:
         with open("files/"+filename, 'wb') as file:

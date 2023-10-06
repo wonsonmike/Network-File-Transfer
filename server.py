@@ -66,11 +66,14 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
             elif b"===EOF===" in data: # It's the end of the file
                 response += data.replace(b"===EOF===", b"")
                 break
+            elif b"Error" in data:
+                response += data
+                break
             else:
                 response += data
 
         # If possible, save the file. Send a message either confirming file upload or error
-        if response == "Error":
+        if b"Error" in response:
             self.request.sendall(b"File not found. Try again.\n")
         else:
             with open("files/"+filename, 'wb') as file:
