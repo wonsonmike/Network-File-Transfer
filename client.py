@@ -51,7 +51,7 @@ def upload_file(client_socket):
         with open("uploading/"+filename, 'rb') as file:
             data = file.read()
             client_socket.sendall(data)
-    except Exception as e:
+    except FileNotFoundError:
         client_socket.sendall(b"Error")
 
     # Print the response
