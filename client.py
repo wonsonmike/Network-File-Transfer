@@ -112,6 +112,9 @@ def delete_file(client_socket):
     verify = client_socket.recv(1024).decode("utf-8")
     print(verify)
 
+    # Tell the user if the file was deleted from the server
+    print(client_socket.recv(1024).decode("utf-8"))
+
 def connect_to_server(server_host, server_port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         # Connect to the client, and confirm connection to the user

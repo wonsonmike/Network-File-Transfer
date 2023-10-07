@@ -104,6 +104,15 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
         else: 
             self.request.sendall(b"File not found. Try again.\n")
 
+        # If the file exists, delete it.
+        if filename in files:
+            os.remove("files/"+filename)
+            if filename not in os.listdir("files"):
+                self.sendall(b"File deleted successfully.")
+            else:
+                self.sendall(b"File not deleted. Try again.")
+        
+
 if __name__ == "__main__":
     # Start the server, and verify the host and port of the server
     host, port = "192.168.8.135", 2222
