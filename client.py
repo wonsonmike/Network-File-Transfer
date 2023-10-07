@@ -86,7 +86,22 @@ def upload_file(client_socket):
     print(response)
 
 def delete_file(client_socket):
-    pass
+    # Tell the server I want to delete a file
+    command = "delete"
+    client_socket.sendall(command.encode("utf-8"))
+
+    # List the files available to be deleted 
+    filenames = client_socket.recv(4096).decode("utf-8").strip()
+    print("List of files in the directory:")
+    print(filenames)
+
+    # Get the filename from the user and send it to server
+    filename = input("Enter the filename to download a file: ")
+    client_socket.sendall(filename.encode("utf-8")) 
+
+    # Verify that the filename is valid from the server
+    verify = client_socket.recv(1024).decide("utf-8")
+    print(verify)
 
 def connect_to_server(server_host, server_port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:

@@ -19,6 +19,9 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
             elif command == "send": # Client wants to upload a file
                 self.get_file()
 
+            elif command == "delete": # Client wants to delete a file
+                self.delete_file()
+
             elif command == "close": # Client wants to close the connection
                 break
 
@@ -79,6 +82,20 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
             with open("files/"+filename, 'wb') as file:
                 file.write(response)
             self.request.sendall(b"File uploaded successfully.\n")
+    def delete_file(self):
+        # Send a list of the files available to download
+        files = os.listdir('files')
+        file_list = '\n'.join(files)
+        self.request.sendall(file_list.encode("utf-8"))
+
+        # Get the filename from the user
+        filename = self.request.recv(1024).decode("utf-8").strip()
+
+        # Check the filename from the user
+        if filename in file_list:
+            self.request.sendall(b"File not found. Try again.\n")
+        else: 
+            self.request.sendall(b"File found. Proceed.\n")
 
 if __name__ == "__main__":
     # Start the server, and verify the host and port of the server
