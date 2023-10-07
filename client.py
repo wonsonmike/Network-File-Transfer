@@ -100,7 +100,7 @@ def delete_file(client_socket):
     client_socket.sendall(filename.encode("utf-8")) 
 
     # Verify that the filename is valid from the server
-    verify = client_socket.recv(1024).decide("utf-8")
+    verify = client_socket.recv(1024).decode("utf-8")
     print(verify)
 
 def connect_to_server(server_host, server_port):
