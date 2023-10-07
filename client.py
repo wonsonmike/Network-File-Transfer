@@ -34,28 +34,35 @@ def download_file(client_socket):
     filename = input("Enter the filename to download a file: ")
     client_socket.sendall(filename.encode("utf-8")) 
     
-    # Get the file data (or error message)
-    response = b""
-    while True: # Loop until response has all data from the file
-        data = client_socket.recv(4096)
-        if not data:
-            break
-        elif b"===EOF===" in data:
-            response += data.replace(b"===EOF===", b"")
-            break
-        elif b"File not found." in data:
-            response += data
-            break
-        else:
-            response += data
+    # Check if the filename is valid with the server
+    check = client_socket.recv(1024).decode("utf-8")
 
-    # If it's an error, display it. Otherwise, save the file in the files folder
-    if b"File not found." in response:
-        print(response.decode("utf-8"))
-    else:
-        with open("files/"+filename, 'wb') as file:
-            file.write(response)
-        print("File successfully downloaded to the files folder.")
+    # If the filename is valid, get the file data (or error message)
+    if "Proceed" in check:
+        print(check)
+        response = b""
+        while True: # Loop until response has all data from the file
+            data = client_socket.recv(4096)
+            if not data:
+                break
+            elif b"===EOF===" in data:
+                response += data.replace(b"===EOF===", b"")
+                break
+            elif b"File not found." in data:
+                response += data
+                break
+            else:
+                response += data
+
+        # If it's an error, display it. Otherwise, save the file in the files folder
+        if b"File not found." in response:
+            print(response.decode("utf-8"))
+        else:
+            with open("files/"+filename, 'wb') as file:
+                file.write(response)
+            print("File successfully downloaded to the files folder.")
+    else: # Filename is not valid
+        print(check)
 
 def upload_file(client_socket):
     # Tell the server I want to upload a file
@@ -70,6 +77,8 @@ def upload_file(client_socket):
 
     # Choose a file to upload and send the filename
     filename = input("Enter the filename for upload: ")
+    while filename not in files:
+        filename = input("File not found. Enter the filename for upload: ")
     client_socket.sendall(filename.encode("utf-8"))
 
     # Upload the file, or the error message
