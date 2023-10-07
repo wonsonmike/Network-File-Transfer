@@ -108,9 +108,9 @@ class SFTPServerHandler(socketserver.BaseRequestHandler):
         if filename in files:
             os.remove("files/"+filename)
             if filename not in os.listdir("files"):
-                self.sendall(b"File deleted successfully.")
+                self.request.sendall(b"File deleted successfully.")
             else:
-                self.sendall(b"File not deleted. Try again.")
+                self.request.sendall(b"File not deleted. Try again.")
         
 
 if __name__ == "__main__":
