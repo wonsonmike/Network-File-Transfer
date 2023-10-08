@@ -1,7 +1,3 @@
 This is the first test file.
 
-Let's make sure this works.
-
--Michael Wonson
-
-new update
+This will test transferring files between client and server.
