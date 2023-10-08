@@ -8,7 +8,7 @@ With both the client and server software, you'll simply run the python file in a
 
 My purpose of writing this software was to introduce myself to network programming. I wanted to create a basic server and client, and learn how to manage that connection, and send data between the server and client. 
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://www.youtube.com/watch?v=Y3IhWbCf0Qo)
 
 # Network Communication
 
